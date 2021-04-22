@@ -5,10 +5,8 @@ const passport = require("passport")
 // const cookieParser = require('cookie-parser') # à remplacer par le storage
 const session = require('express-session')
 const bodyParser = require('body-parser')
-const path = require('path');
-const dotenv = require("dotenv")
-dotenv.config( { path: dotenv.config().parsed["IS_LOCAL"] === 'true' ? path.join(__dirname, `./environments/.env.dev`) : path.join(__dirname, `./environments/.env.prod`)})
-console.log(process.env.ENV)
+
+require('./environments/dotenvConfig')
 
 // require('./strategies/passport-local')(passport);
 // app.use(cookieParser()); # à remplacer par le storage
