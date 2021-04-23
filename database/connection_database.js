@@ -6,8 +6,6 @@ const userDB = process.env.USER_DB
 const password = process.env.PASS
 const database = process.env.DB
 
-console.log(process.env.HOST)
-
 module.exports = mysql.createConnection({
     host: host,
     port: port,
