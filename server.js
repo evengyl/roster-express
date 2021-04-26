@@ -1,57 +1,62 @@
 const express = require('express');
-const session = require('express-session');
 const app = new express();
 const bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-const passport = require("passport");
-const LocalStrategy = require('passport-local').Strategy;
-
+const jwt = require('jsonwebtoken');
+const expressJWT = require('express-jwt');
 const cors = require('cors')
-const corsOptions = { origin: `http://localhost:4200` }
+const corsOptions = {origin: `http://localhost:4200`}
 // const corsOptions = { origin: `http://127.0.0.1:8080` }
 app.use(cors(corsOptions))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true})) // support encoded bodies for form http post
+
 require('./environments/dotenvConfig')
 
+app.use(cors());
+app.options('*', cors());
+app.use(bodyParser.json({limit: '10mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 
-const authController = require("./controllers/auth_controller");
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies for form http post
-app.use(session({
-    secret: "r8q,+&1LM3)CD('jilsqdfzAGpx1xm)-jhyfgNeQhc;#",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60 * 60 * 1000 } // Remember to set this
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-
-passport.use(new LocalStrategy({
-        username : 'username',
-        password : 'password',
-        passReqToCallback : true // allows us to pass back the entire request to the callback
-    },
-    function(req, username, password, done) {
-        authController.getLogin(username, password, done)
-    })
-);
-
-passport.serializeUser(function(user, done) {
-    console.log("user ", user)
-    if(user) done(null, user);
+//Root
+app.get('/', (req, res) => {
+    res.json("Hello World");
 });
 
-passport.deserializeUser(function(id, done) {
-    done(null, id);
+/* CODE IN BETWEEN */
+//SECRET FOR JSON WEB TOKEN
+let secret = 'some_secret';
+
+//ALLOW PATHS WITHOUT TOKEN AUTHENTICATION
+app.use(expressJWT({secret: secret, algorithms: ['HS256']})
+    .unless(
+        {
+            path: [
+                '/api/signin'
+            ]
+        }
+    ));
+
+/* CREATE TOKEN FOR USE */
+app.get('/api/signin', (req, res) => {
+    var userData = {
+        "name": "Jhon Doe",
+        "id": "1"
+    }
+    let token = jwt.sign(userData, secret, {expiresIn: '15s'})
+    res.status(200).json({"token": token, "user": userData});
 });
 
+app.get('/api/dashboard', (req, res) => {
+    res.status(200)
+        .json({
+            "success": true,
+            "msg": "Secrect Access Granted"
+        });
+});
 
+/* CODE IN BETWEEN */
 
-const router = require("./router/router")
-
-app.use("/", router)
-
+/* LISTEN */
 app.listen(process.env.PORT, () => {
     console.log(`Environnement: ${process.env.ENV} | version: ${process.env.VERSION} | port: ${process.env.PORT}`)
 })

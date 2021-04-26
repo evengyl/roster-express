@@ -1,4 +1,4 @@
-# PassportJs
+# JWT
 ## Ressources / Tutos
 > https://github.com/nax3t/angular-express-passport-tutorial
 
