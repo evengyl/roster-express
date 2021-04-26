@@ -9,8 +9,8 @@ exports.getAll = (req, res) => {
         res.json(datas)
     }).catch((error) => (console.log(error)))
 }
-/*
 
+/*
 exports.getOne = (req, res) => {
     userModel.getOne(req.params.id).then((datas) => {
         res.json(datas)

@@ -14,12 +14,6 @@ exports.getAll = () => {
     })
 }
 
-exports.getLogin = (body) => {
-   return connection.then((conn) => {
-        return conn.query(" SELECT * FROM user WHERE email = ? AND  pass= ?;", [body.email, body.pass])
-    })
-}
-
 /*
 /!** GET ONE *!/
 exports.getOne = (id) => {
