@@ -29,22 +29,22 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy({
         username : 'username',
-        password : 'password',
-        passReqToCallback : true // allows us to pass back the entire request to the callback
+        password : 'password'
     },
-    function(req, username, password, done) {
+    (username , password, done) => {
         authController.getLogin(username, password, done)
+        //si ok, "done" déclanche un next sur la route actuel
     })
 );
 
-passport.serializeUser(function(user, done) {
-    console.log("user ", user)
+passport.serializeUser((user, done) => {
     if(user) done(null, user);
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser((id, done) => {
     done(null, id);
 });
+
 
 
 

@@ -6,10 +6,7 @@ const passport = require("passport");
 
 // signin
 // http://localhost:3000/api/signin
-router.post('/api/signin', passportLocal.auth() , (req, res) => {
-    // req.session.passport.authenticated = true;
-    res.status(200).json({"statusCode" : 200 ,"user" : req.session.passport });
-});
+router.post('/api/signin', passport.authenticate('local'), passportLocal.auth);
 
 // signup
 // http://localhost:3000/api/signup
